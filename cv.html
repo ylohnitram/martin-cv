@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Martin Holý CV - AI-Native Architect, Senior AI Software Engineer</title>
+  <meta name="author" content="Martin Holý">
+  <meta name="description" content="CV of Martin Holý, AI-native architect and senior AI software engineer. Autonomous AI agents, multi-agent systems, LLM evaluation, Rust.">
+  <meta name="robots" content="noindex">
+  <style>
+    /* ATS-safe layout. One column, real text only, no tables, no images,
+       no icons, contact details in the body (not in a page header/footer).
+       Colors: light blue + orange. Body text stays dark for contrast. */
+    @page { size: A4; margin: 8mm 13mm 7mm 13mm; }
+
+    :root {
+      --sky: #5bb8ec;        /* light blue, accents and rules */
+      --sky-tint: #eaf6fd;   /* light blue, header band */
+      --sky-line: #cde7f7;   /* light blue, hairlines */
+      --sky-deep: #0b6ea6;   /* readable blue for headings and links */
+      --orange: #f28a1e;     /* orange, accents */
+      --ink: #1a2330;
+      --muted: #566273;
+    }
+
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Open Sans", Carlito, "Liberation Sans", Arial, sans-serif;
+      font-size: 9.4pt;
+      line-height: 1.38;
+      /* ligatures break keyword extraction in some ATS parsers ("ﬁ" ≠ "fi") */
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0, "clig" 0, "dlig" 0;
+    }
+
+    @media screen {
+      body { background: #f3f7fa; }
+      .page { max-width: 210mm; margin: 24px auto; padding: 12mm 14mm; background: #fff;
+              box-shadow: 0 2px 18px rgba(11, 110, 166, .12); }
+    }
+
+    a { color: var(--sky-deep); text-decoration: none; }
+
+    /* Header */
+    .head {
+      background: var(--sky-tint);
+      border-left: 5px solid var(--sky);
+      border-bottom: 3px solid var(--orange);
+      border-radius: 6px 6px 0 0;
+      padding: 13px 18px 11px;
+    }
+    h1 { margin: 0; font-size: 24pt; line-height: 1.1; color: #0d2a40; letter-spacing: -0.01em; }
+    .headline { margin: 3px 0 6px; font-size: 11pt; font-weight: 600; color: var(--sky-deep); }
+    .contact { margin: 0; font-size: 8.8pt; color: var(--muted); }
+    .contact a { color: inherit; }
+    .contact .sep { color: var(--orange); padding: 0 1px; }
+
+    /* Section headings. No positioning anywhere: Chrome paints positioned
+       boxes last, which moves their text to the end of the PDF content
+       stream and breaks reading order for stream-based ATS parsers.
+       The orange accent is a background instead of a ::after box. */
+    h2 {
+      margin: 10px 0 5px;
+      padding-bottom: 5px;
+      background:
+        linear-gradient(var(--orange), var(--orange)) left bottom / 38px 3px no-repeat,
+        linear-gradient(var(--sky-line), var(--sky-line)) left bottom / 100% 1px no-repeat;
+      font-size: 10.5pt;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sky-deep);
+      break-after: avoid;
+    }
+
+    p { margin: 0 0 5px; }
+
+    /* Skills: label column + keyword text, rendered in DOM order */
+    .skills { display: grid; grid-template-columns: 34mm 1fr; column-gap: 10px; row-gap: 3px; }
+    .skills .label { font-weight: 700; color: var(--sky-deep); }
+
+    /* Experience */
+    .job { margin: 0 0 6px; }
+    .job:not(:has(ul)) { margin-bottom: 1px; }
+    .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+                break-after: avoid; }
+    h3 { margin: 0; font-size: 10.3pt; }
+    h3 .org { color: var(--sky-deep); }
+    .dates { flex: none; font-size: 9pt; font-weight: 600; color: var(--muted); white-space: nowrap; }
+    .dates .where { font-weight: 400; }
+    .dates .sep { color: var(--orange); padding: 0 5px; font-weight: 400; }
+    .nw { white-space: nowrap; }
+    .job-head { margin-bottom: 2px; }
+
+    ul { margin: 0; padding-left: 15px; }
+    li { margin: 0 0 2px; padding-left: 2px; }
+    li::marker { color: var(--orange); }
+    li strong { font-weight: 600; }
+
+    .sub { margin: 4px 0 1px; font-size: 8.4pt; font-weight: 700; letter-spacing: 0.06em;
+           text-transform: uppercase; color: #c2650a; break-after: avoid; }
+    .two { display: grid; grid-template-columns: 1fr 1fr; column-gap: 22px; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header class="head">
+    <h1>Martin Holý</h1>
+    <p class="headline">AI-Native Architect | Senior AI Software Engineer | AI Harnesses and Evals</p>
+    <p class="contact"><span class="nw">Prague, Czechia (remote)</span> <span class="sep">|</span> <span class="nw">+420&nbsp;792&nbsp;305&nbsp;456</span> <span class="sep">|</span> <span class="nw">ylohnitram@gmail.com</span> <span class="sep">|</span> <span class="nw"><a href="https://ylohnitram.dev">ylohnitram.dev</a></span> <span class="sep">|</span> <span class="nw"><a href="https://www.linkedin.com/in/ylohnitram">linkedin.com/in/ylohnitram</a></span> <span class="sep">|</span> <span class="nw"><a href="https://github.com/ylohnitram">github.com/ylohnitram</a></span></p>
+  </header>
+
+  <section>
+    <h2>Summary</h2>
+    <p>Senior AI software engineer and AI-native architect. I build the harnesses that let LLM agents do real engineering work unattended, and the evals that show what they can and cannot do. Before AI I spent 15+ years in deployment automation, DevOps and platform engineering, including team lead and DevOps manager roles. Open to Senior AI Software Engineer, AI-Native Architect and CTO roles.</p>
+  </section>
+
+  <section>
+    <h2>Core Skills</h2>
+    <div class="skills">
+      <div class="label">AI</div>
+      <div>AI harnesses, LLM evals, multi-agent systems, Claude Code, MCP, OpenAI Agents SDK, guardrails, model routing, prompt injection testing</div>
+
+      <div class="label">Engineering</div>
+      <div>Rust, TypeScript, Python, Bash, distributed systems, capability-based security, smart contract security</div>
+
+      <div class="label">Platform</div>
+      <div>GCP, GKE, Kubernetes, Docker, Terraform, CI/CD, GitHub Actions, GitLab</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+
+    <article class="job">
+      <div class="job-head">
+        <h3><span class="role">Senior AI Software Engineer</span>, <span class="org">Avvoka</span></h3>
+        <span class="dates"><span class="where">London Area, United Kingdom</span><span class="sep">|</span>Mar 2026 – Present</span>
+      </div>
+      <ul>
+        <li>Build a software factory, a GitLab-integrated <strong>multi-agent harness</strong> that writes, reviews and ships production code.</li>
+        <li>Agent workflows around merge requests, CI feedback and code review, with guardrails and QA gates before anything lands.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-head">
+        <h3><span class="role">AI Platform Architect</span>, <span class="org">Replikanti</span></h3>
+        <span class="dates"><span class="where">Prague, Czechia</span><span class="sep">|</span>Nov 2025 – Present</span>
+      </div>
+      <ul>
+        <li>Founder and lead architect of <a href="https://github.com/Replikanti/agentis"><strong>Agentis</strong></a>, an open-core agent platform with a 214,000-line Rust runtime. Its agent federations take GitHub issues to merged pull requests on their own.</li>
+        <li><strong>AI SDLC harness</strong> on Claude Code with 10 agents and human approval stops. <a href="https://github.com/Replikanti/sdlc-bench">sdlc-bench</a> picks the cheapest model that passes each task class.</li>
+        <li><a href="https://github.com/Replikanti/agentis-colonies/tree/main/dark-factory"><strong>dark-factory</strong></a>, an autonomous smart contract audit federation. Active on Immunefi, Sherlock and Cantina.</li>
+        <li><a href="https://github.com/Replikanti/mie"><strong>MIE</strong></a>, a deterministic BTC market research engine in Rust.</li>
+        <li><strong>interviewscam.com</strong> (in development), a registry of fake job-interview scams that target developers.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-head">
+        <h3><span class="role">Automation Engineer</span>, <span class="org">Alma Career Czechia</span></h3>
+        <span class="dates">Sep 2018 – Dec 2025</span>
+      </div>
+      <ul>
+        <li>Designed and operated a <strong>self-service deployment platform</strong> and introduced Kubernetes and Istio. Member of the architecture team.</li>
+        <li>Early AI adoption. Claude for code and documentation, n8n workflows for GitHub Copilot usage reporting.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-head">
+        <h3><span class="role">DevOps Manager</span>, <span class="org">Home Credit International</span></h3>
+        <span class="dates">Sep 2017 – Jun 2018</span>
+      </div>
+      <ul>
+        <li>DEV and UAT environments and infrastructure for Air Bank's international expansion. CI/CD, monitoring and incident management.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-head">
+        <h3><span class="role">Application Support Team Lead</span>, <span class="org">Home Credit International</span></h3>
+        <span class="dates">Mar 2013 – Aug 2017</span>
+      </div>
+      <ul>
+        <li>Led a team of application specialists. SLA/OLA metrics, deployment automation, PROD releases with go/no-go decisions.</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-head">
+        <h3><span class="role">Senior Application Support Specialist</span>, <span class="org">Home Credit International</span></h3>
+        <span class="dates">Jul 2012 – Mar 2013</span>
+      </div>
+    </article>
+
+    <article class="job">
+      <div class="job-head">
+        <h3><span class="role">Infrastructure Engineer</span>, <span class="org">IBM</span></h3>
+        <span class="dates">Mar 2010 – Jun 2012</span>
+      </div>
+    </article>
+
+    <article class="job">
+      <div class="job-head">
+        <h3><span class="role">Technical Support Specialist</span>, <span class="org">AVG</span></h3>
+        <span class="dates">Mar 2008 – Feb 2010</span>
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <h2>Projects</h2>
+    <ul>
+      <li><strong>Rare-bug blindness eval</strong> (micro1 Eval Hackathon, Nov 2026). Models found half of consensus audit bugs, 22% of rare ones.</li>
+      <li><a href="https://github.com/ylohnitram/agent-mandate-evals"><strong>agent-mandate-evals</strong></a> (Oct 2026). Evals for paying AI agents, found and fixed a prompt injection redirect.</li>
+    </ul>
+  </section>
+
+  <div class="two">
+    <section>
+      <h2>Education</h2>
+      <p>Gymnázium Jateční, Ústí nad Labem</p>
+    </section>
+    <section>
+      <h2>Languages</h2>
+      <p>Czech (native), English (B2, professional), German (A2)</p>
+    </section>
+  </div>
+
+</div>
+</body>
+</html>

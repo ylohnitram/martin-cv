@@ -1,0 +1,55 @@
+name: Deploy site
+
+# Builds data.json (latest commits and PR counts) and deploys the site to GitHub Pages.
+# Runs on every push to main and once an hour, so the block explorer stays fresh.
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # STATS_TOKEN: read-only token that can see the private Replikanti repos
+      # (only counts and dates are published from those). Without it the job falls
+      # back to github.token, private repos come out null and the page keeps the
+      # committed snapshot for them.
+      - name: Fetch repo stats
+        env:
+          GH_TOKEN: ${{ secrets.STATS_TOKEN || github.token }}
+        run: |
+          if bash tools/fetch-stats.sh > data.new.json && jq -e '.repos' data.new.json >/dev/null; then
+            mv data.new.json data.json
+          else
+            echo "::warning::stats fetch failed, deploying the committed data.json"
+          fi
+
+      - name: Stage site
+        run: |
+          mkdir -p _site
+          cp index.html data.json Martin_Holy_CV.pdf CNAME robots.txt sitemap.xml site.webmanifest \
+             LinkedIn_400.jpg favicon* android-chrome-* apple-touch-icon.png _site/
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

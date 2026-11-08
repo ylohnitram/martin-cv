@@ -1,11 +1,11 @@
 {
-  "name": "Martin Holy",
+  "name": "Martin Holý",
   "short_name": "MH",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#060b16",
+  "background_color": "#060b16",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
