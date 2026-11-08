@@ -1,974 +1,706 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Martin Holý – AI-Native Architect | Autonomous Agents & AI Integration</title>
-  <meta name="description" content="AI-Native Architect building autonomous agent federations: the open-core Agentis platform (Rust), AI engineering factories for the software delivery lifecycle, and Web3 security research on audit contests." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Martin Holý · AI harnesses and evals</title>
+  <meta name="description" content="Martin Holý, AI-native architect and Senior AI Software Engineer. I build the harnesses that let LLM agents do real engineering work unattended, and the evals that show what they can and cannot do.">
+  <meta property="og:title" content="Martin Holý · AI harnesses and evals">
+  <meta property="og:description" content="Software factory at Avvoka, open-source agent federations, Web3 security research and BTC market research.">
+  <meta property="og:url" content="https://ylohnitram.dev/">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://ylohnitram.dev/">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#060b16">
   <script defer src="https://cloud.umami.is/script.js" data-website-id="dc7aa983-6ef2-4ece-a398-cd3d1bed7a1d"></script>
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0f17">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Martian+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap">
   <style>
+    /* Block Explorer. Midnight navy chain explorer. Light blue = confirmed data,
+       orange = running. Display Unbounded, data Martian Mono, body Instrument Sans.
+       The career reads as a chain: the current job is a running contract and every
+       project is a block with its real latest commit, refreshed hourly from GitHub. */
     :root {
-      --bg: #ffffff;
-      --sidebar-bg: #f8f9fa;
-      --text: #212529;
-      --muted: #6c757d;
-      --accent: #007bff; /* Professional Blue */
-      --accent-hover: #0056b3;
-      --accent-2: #e8590c; /* orange accent — lines only, never large surfaces */
-      --accent-3: #0891b2; /* cyan — gradient partner for the blue */
-      --border: #e9ecef;
-      --radius: 8px;
-      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color-scheme: dark;
+      --bg: #060b16;
+      --surface: #0b1323;
+      --surface-2: #0f1a2f;
+      --line: #1c2a44;
+      --line-2: #16223a;
+      --text: #e4ecf8;
+      --text-2: #c9d5e6;
+      --muted: #8ea0bd;
+      --cyan: #63d2ff;
+      --orange: #ff9a4a;
+      --display: 'Unbounded', 'Arial Black', sans-serif;
+      --mono: 'Martian Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --body: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
     }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0b0f17;
-        --sidebar-bg: #0f1521;
-        --text: #e6eaf2;
-        --muted: #9aa4b6;
-        --accent: #58aeff;
-        --accent-hover: #7cc0ff;
-        --accent-2: #fb923c;
-        --accent-3: #22d3ee;
-        --border: #1e2836;
-      }
-    }
-
     *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
     html { scroll-behavior: smooth; }
-    
     body {
       margin: 0;
-      background: var(--bg);
+      background-color: var(--bg);
+      background-image: radial-gradient(rgba(99,210,255,.10) 1px, transparent 1.2px);
+      background-size: 22px 22px;
       color: var(--text);
-      font-family: var(--font-main);
-      line-height: 1.6;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      font: 16px/1.55 var(--body);
     }
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { color: var(--orange); }
+    a:focus-visible, input:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .mono { font-family: var(--mono); }
+    .muted { color: var(--muted); }
+    .cy { color: var(--cyan); }
+    .or { color: var(--orange); }
+    .s-run { color: var(--orange); border-color: var(--orange) !important; }
+    .s-ok { color: var(--cyan); border-color: var(--cyan) !important; }
+    .s-mute { color: var(--muted); border-color: var(--muted) !important; }
+    .label { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
 
-    /* Layout: Sidebar + Main Content */
-    @media (min-width: 900px) {
-      body {
-        flex-direction: row;
-      }
-      .sidebar {
-        width: 300px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
-        border-right: 1px solid var(--border);
-        overflow-y: auto;
-        padding: 40px;
-        display: flex;
-        flex-direction: column;
-        background: var(--sidebar-bg);
-      }
-      .main-content {
-        flex: 1;
-        padding: 60px 80px;
-        max-width: 960px;
-      }
-    }
-    /* Mobile Header & Sidebar */
-    .mobile-header {
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px 40px;
-      border-bottom: 1px solid var(--border);
-      background: var(--sidebar-bg);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .header-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1px solid var(--border);
-    }
-    .main-footer {
-      display: none;
-      margin-top: auto;
-      padding-top: 3rem;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      color: var(--muted);
-    }
-    
-    @media (max-width: 899px) {
-      .mobile-header { display: flex; }
-      .main-footer { display: block; }
-      .sidebar-footer { display: none; }
-      
-      .sidebar {
-        position: fixed;
-        inset: 0;
-        z-index: 100; /* Above header */
-        background: var(--sidebar-bg); /* Solid background */
-        transform: translateX(-100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        width: 80%;
-        max-width: 300px;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        padding: 40px; /* Add padding for mobile drawer */
-      }
-      .sidebar.open {
-        transform: translateX(0);
-      }
-      
-      /* Mobile Menu Overlay */
-      .menu-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: 90; /* Below sidebar, above header */
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s;
-      }
-      .menu-overlay.open {
-        opacity: 1;
-        pointer-events: auto;
-      }
+    /* header */
+    .top-bar { border-bottom: 1px solid var(--line); background: rgba(6,11,22,.92); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(6px); }
+    .top-inner { max-width: 1320px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--text); font-family: var(--display); font-weight: 700; font-size: 16px; }
+    .net { font-family: var(--mono); font-size: 11px; padding: 4px 9px; border: 1px solid #1c3a55; color: var(--cyan); border-radius: 999px; }
+    .search { flex: 1 1 300px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 12px; min-height: 44px; }
+    .search input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--text); font: 13px var(--mono); min-height: 42px; }
+    .search input::placeholder { color: var(--muted); }
+    .cv-btn { font: 600 12px var(--mono); padding: 12px 14px; background: var(--orange); color: #170b02; border-radius: 8px; }
+    .cv-btn:hover { color: #170b02; background: #ffb170; }
 
-      .main-content {
-        padding: 40px 40px;
-      }
+    main { max-width: 1320px; margin: 0 auto; padding: 32px 24px 72px; display: flex; flex-direction: column; gap: 30px; }
+    h2.sec { margin: 0; font: 700 24px/1.2 var(--display); }
+    .sec-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 10px; }
 
-      nav ul {
-        display: block; /* Stack links vertically in drawer */
-        font-size: 1rem;
-      }
-      nav li { margin-bottom: 1.2rem; }
-    }
+    /* stats */
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .stats > div { background: var(--surface); padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
+    .stat-big { font: 700 26px/1.2 var(--display); font-variant-numeric: tabular-nums; }
+    .stat-sub { font-size: 14px; color: var(--muted); font-family: var(--body); font-weight: 500; }
 
-    /* Burger Button */
-    .burger-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--text);
-      font-size: 1.5rem;
-    }
+    /* account + contract */
+    .top-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+    .card { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 26px; display: flex; flex-direction: column; gap: 16px; }
+    .who { display: flex; align-items: center; gap: 18px; }
+    .who img { width: 72px; height: 72px; border-radius: 12px; border: 1px solid #1c3a55; object-fit: cover; }
+    h1 { margin: 0; font: 800 50px/1 var(--display); letter-spacing: -.02em; text-wrap: balance; }
+    .role { font: 13px var(--mono); color: var(--cyan); }
+    .thesis { margin: 0; max-width: 60ch; font-size: 17px; color: var(--text-2); }
+    .chips { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+    .chips li { font: 12px var(--mono); padding: 5px 10px; border-radius: 999px; border: 1px solid #1c3a55; background: var(--surface-2); }
+    .contract { border-color: #5a3a1e; background: linear-gradient(180deg, #121a2c, var(--surface)); }
+    .run { display: flex; align-items: center; gap: 8px; font: 12px var(--mono); color: var(--orange); }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,154,74,.55); } 50% { box-shadow: 0 0 0 6px rgba(255,154,74,0); } }
+    .contract h2 { margin: 0; font: 700 30px/1.1 var(--display); overflow-wrap: anywhere; }
+    .kv { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 6px 14px; font: 13px var(--mono); margin: 0; }
+    .kv dt { color: var(--muted); }
+    .kv dd { margin: 0; }
+    .code { border: 1px solid var(--line); border-radius: 8px; background: #070d1a; padding: 14px 16px; font: 13px var(--mono); display: flex; flex-direction: column; gap: 6px; overflow-x: auto; }
+    .code .k { color: var(--orange); }
+    .code .a { color: var(--muted); }
+    .contract ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; color: var(--text-2); }
+    .contract li { display: grid; grid-template-columns: 18px minmax(0, 1fr); }
+    .contract li::before { content: '›'; color: var(--cyan); }
 
+    /* chain */
+    .strip-wrap { position: relative; }
+    .chain { margin: 0; padding: 6px 2px 4px; list-style: none; display: flex; overflow-x: auto; overscroll-behavior-x: contain;
+             scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; cursor: grab; }
+    .chain::-webkit-scrollbar { display: none; }
+    .chain.dragging { scroll-snap-type: none; scroll-behavior: auto; cursor: grabbing; }
+    .chain.fade-r { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 72px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 72px), transparent); }
+    .chain.fade-l { -webkit-mask-image: linear-gradient(90deg, transparent, #000 72px); mask-image: linear-gradient(90deg, transparent, #000 72px); }
+    .chain.fade-l.fade-r { -webkit-mask-image: linear-gradient(90deg, transparent, #000 72px, #000 calc(100% - 72px), transparent); mask-image: linear-gradient(90deg, transparent, #000 72px, #000 calc(100% - 72px), transparent); }
+    .chain-item { display: flex; align-items: center; flex: none; scroll-snap-align: start; }
+    .chain-item:not(:last-child)::after { content: ''; width: 30px; height: 2px; margin: 0 2px;
+      background: linear-gradient(90deg, rgba(99,210,255,.7), rgba(255,154,74,.7)); box-shadow: 0 0 8px rgba(99,210,255,.45); }
+    .blk { width: 244px; min-height: 128px; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px;
+           color: var(--text); transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; -webkit-user-drag: none; user-select: none; }
+    .rail { height: 3px; border-radius: 3px; background: var(--line-2); overflow: hidden; margin-top: 10px; }
+    .thumb { display: block; height: 100%; width: 30%; border-radius: 3px; background: linear-gradient(90deg, var(--cyan), var(--orange));
+             box-shadow: 0 0 10px rgba(99,210,255,.6); transition: transform .12s linear; }
+    .nav-btns { display: flex; gap: 8px; }
+    .nav-btn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--text);
+               display: grid; place-items: center; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease, opacity .15s ease; }
+    .nav-btn:hover:not(:disabled) { border-color: var(--cyan); box-shadow: 0 0 14px rgba(99,210,255,.35); }
+    .nav-btn:disabled { opacity: .3; cursor: default; }
+    .nav-btn:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+    .blk:hover { transform: translateY(-3px); border-color: var(--cyan); color: var(--text); box-shadow: 0 8px 24px rgba(99,210,255,.14); }
+    .blk-active { border-color: #5a3a1e; }
+    .blk-top { display: flex; justify-content: space-between; font: 11px var(--mono); color: var(--muted); }
+    .blk-name { font: 700 15px/1.2 var(--display); }
+    .blk-hash { font: 12px var(--mono); color: var(--cyan); }
+    .blk-date { font: 11px var(--mono); color: var(--muted); }
 
-    /* Typography */
-    h1, h2, h3, h4 {
-      margin-top: 0;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-    h1 {
-      font-size: clamp(2.2rem, 4vw, 3.2rem);
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
-    }
-    h2 {
-      font-size: 1.8rem;
-      margin-bottom: 1.5rem;
-      margin-top: 3rem;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 0.5rem;
-    }
-    h3 {
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-    }
-    p { margin-bottom: 1.2rem; }
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    a:hover {
-      color: var(--accent-hover);
-      text-decoration: underline;
-    }
+    /* details */
+    .details { display: flex; flex-direction: column; gap: 18px; }
+    .detail { display: grid; grid-template-columns: 260px minmax(0, 1fr); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); scroll-margin-top: 90px; }
+    .detail:target { border-color: var(--orange); }
+    .meta { background: var(--surface-2); padding: 20px; display: flex; flex-direction: column; gap: 10px; font: 12px var(--mono); border-right: 1px solid var(--line); }
+    .meta h3 { margin: 0; font: 700 20px/1.2 var(--display); overflow-wrap: anywhere; }
+    .pill { align-self: flex-start; font: 600 11px var(--mono); padding: 3px 9px; border-radius: 999px; border: 1px solid; }
+    .meta dl { margin: 0; display: grid; grid-template-columns: 106px minmax(0, 1fr); gap: 5px 10px; }
+    .meta dt { color: var(--muted); white-space: nowrap; }
+    .meta dd { margin: 0; font-variant-numeric: tabular-nums; }
+    .stack { color: var(--muted); font-size: 11.5px; }
+    .body { padding: 20px 24px; display: flex; flex-direction: column; gap: 12px; }
+    .lead { margin: 0; font-size: 17px; }
+    .txs { margin: 0; padding: 0; list-style: none; }
+    .txs li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-top: 1px solid var(--line-2); font-size: 15px; color: var(--text-2); }
+    .tx { font: 12px var(--mono); color: var(--cyan); padding-top: 2px; white-space: nowrap; }
+    .empty { font: 13px var(--mono); color: var(--muted); }
 
-    /* Sidebar Components */
-    .brand {
-      display: block;
-      margin-bottom: 2rem;
-    }
-    .avatar {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      overflow: hidden;
-      margin-bottom: 1rem;
-      border: 3px solid var(--border);
-    }
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .brand-name {
-      font-size: 1.4rem;
-      font-weight: 700;
-      display: block;
-    }
-    .brand-role {
-      font-size: 0.9rem;
-      color: var(--muted);
-      display: block;
-      margin-top: 0.2rem;
-    }
+    /* contact */
+    .contact { flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; }
+    .contact-links { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; font: 13px var(--mono); }
+    .email { color: var(--orange); font-size: 15px; user-select: all; }
+    footer { font: 11.5px var(--mono); color: #7f91ae; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
-    nav ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+    @media (max-width: 940px) {
+      .top-grid, .detail { grid-template-columns: minmax(0, 1fr); }
+      .meta { border-right: 0; border-bottom: 1px solid var(--line); }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .blk { width: 220px; }
+      h1 { font-size: 38px; }
+      .top-bar { position: static; }
+      .net { display: none; }
+      .contract h2 { font-size: 24px; }
     }
-    nav li {
-      margin-bottom: 0.8rem;
+    @media (max-width: 420px) {
+      main, .top-inner { padding-left: 16px; padding-right: 16px; }
+      .stats { grid-template-columns: minmax(0, 1fr); }
     }
-    nav a {
-      color: var(--text);
-      font-weight: 500;
-      text-decoration: none !important;
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .dot { animation: none; }
+      .blk, .thumb { transition: none; }
+      .chain { scroll-behavior: auto; }
     }
-    nav a:hover {
-      color: var(--accent);
-    }
-    .sidebar-footer {
-      margin-top: auto;
-      padding-top: 2rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .social-links {
-      display: flex;
-      gap: 15px;
-      margin-top: 15px;
-      justify-content: center;
-    }
-    .sidebar-footer .social-links {
-      justify-content: flex-start;
-      margin-bottom: 15px;
-    }
-    .social-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--border);
-      color: var(--text);
-      transition: background 0.2s, color 0.2s;
-    }
-    .social-link:hover {
-      background: var(--accent);
-      color: white;
-      text-decoration: none;
-    }
-    .social-link svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
-    }
-
-    /* Components */
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      background: var(--accent);
-      color: white;
-      border-radius: 6px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      text-align: center;
-    }
-    .btn:hover {
-      background: var(--accent-hover);
-      color: white;
-      text-decoration: none;
-    }
-    .btn.outline {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-    .btn.outline:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 4px 10px;
-      background: var(--border);
-      color: var(--text);
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      margin-right: 6px;
-      margin-bottom: 6px;
-    }
-
-    /* Experience Timeline */
-    .timeline-item {
-      margin-bottom: 2.5rem;
-      position: relative;
-    }
-    .timeline-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      flex-wrap: wrap;
-      margin-bottom: 0.5rem;
-    }
-    .timeline-role {
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-    .timeline-meta {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-    .timeline-desc ul {
-      padding-left: 1.2rem;
-      color: var(--text);
-    }
-    .timeline-desc li { margin-bottom: 0.5rem; }
-
-    /* Projects */
-    .project-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    @media (min-width: 768px) {
-      .project-grid { grid-template-columns: 1fr 1fr; }
-    }
-    .project-card {
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      background: var(--sidebar-bg);
-      display: flex;
-      flex-direction: column;
-    }
-    .project-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: var(--accent);
-    }
-    .project-desc {
-      font-size: 0.95rem;
-      flex: 1;
-      margin-bottom: 1rem;
-    }
-
-    /* Skills */
-    .skills-section {
-      display: grid;
-      gap: 2rem;
-      grid-template-columns: 1fr;
-    }
-    @media (min-width: 768px) {
-      .skills-section { grid-template-columns: 1fr 1fr; }
-    }
-    .skill-category h4 {
-      color: var(--muted);
-      text-transform: uppercase;
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
-      margin-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.5rem;
-    }
-    .skill-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.8rem;
-      font-size: 0.95rem;
-    }
-    .skill-name { font-weight: 500; }
-    .skill-val { color: var(--muted); font-size: 0.85rem; }
-
-    /* ===== Modern-AI theme: blue core, cyan gradients, subtle orange lines ===== */
-
-    body {
-      background:
-        radial-gradient(900px 480px at 85% -10%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%),
-        radial-gradient(700px 420px at -10% 35%, color-mix(in srgb, var(--accent-3) 6%, transparent), transparent 70%),
-        var(--bg);
-      background-attachment: fixed;
-    }
-    /* top hairline: blue → cyan → orange */
-    body::after {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-3) 45%, var(--accent-2));
-      z-index: 300;
-      pointer-events: none;
-    }
-    ::selection { background: color-mix(in srgb, var(--accent) 30%, transparent); }
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-    .eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--accent);
-      font-family: var(--font-mono);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-size: 0.8rem;
-    }
-    .eyebrow::before {
-      content: '';
-      width: 32px;
-      height: 2px;
-      flex: none;
-      background: var(--accent-2);
-    }
-
-    h1 {
-      background: linear-gradient(120deg, var(--text) 35%, var(--accent) 78%, var(--accent-3));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    h2 { position: relative; border-bottom-width: 1px; }
-    h2::after {
-      content: '';
-      position: absolute;
-      left: 0; bottom: -1px;
-      width: 56px; height: 2px;
-      background: linear-gradient(90deg, var(--accent) 0 38px, var(--accent-2) 38px);
-    }
-
-    .timeline-item { position: relative; padding-left: 1.5rem; }
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -4px; top: 8px;
-      width: 9px; height: 9px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
-    }
-    .timeline-item:hover::before {
-      background: var(--accent-2);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 22%, transparent);
-    }
-    .timeline-item::after {
-      content: '';
-      position: absolute;
-      left: 0; top: 24px; bottom: -2rem;
-      width: 1px;
-      background: linear-gradient(var(--border) 80%, transparent);
-    }
-    .timeline-item:last-child::after { display: none; }
-    .timeline-meta { font-family: var(--font-mono); font-size: 0.8rem; }
-
-    .tag {
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      padding: 4px 12px;
-      border-radius: 999px;
-      background: color-mix(in srgb, var(--accent) 8%, transparent);
-      border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
-      color: var(--text);
-    }
-
-    .project-card {
-      position: relative;
-      overflow: hidden;
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-    }
-    .project-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-3) 55%, var(--accent-2));
-      opacity: 0;
-      transition: opacity .18s ease;
-    }
-    .project-card:hover {
-      transform: translateY(-3px);
-      border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
-      box-shadow: 0 10px 32px color-mix(in srgb, var(--accent) 12%, transparent);
-    }
-    .project-card:hover::before { opacity: 1; }
-
-    .btn {
-      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 55%, var(--accent-3)));
-      box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 25%, transparent);
-      transition: transform .15s ease, box-shadow .15s ease;
-    }
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 22px color-mix(in srgb, var(--accent) 35%, transparent);
-    }
-    .btn.outline, .btn.outline:hover {
-      background: transparent;
-      box-shadow: none;
-      transform: none;
-    }
-
-    .avatar {
-      border: 3px solid transparent;
-      background:
-        linear-gradient(var(--sidebar-bg), var(--sidebar-bg)) padding-box,
-        linear-gradient(135deg, var(--accent), var(--accent-3) 55%, var(--accent-2)) border-box;
-    }
-    .brand-role { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.02em; }
-
-    .skill-category h4 { font-family: var(--font-mono); position: relative; }
-    .skill-category h4::after {
-      content: '';
-      position: absolute;
-      left: 0; bottom: -1px;
-      width: 34px; height: 2px;
-      background: linear-gradient(90deg, var(--accent) 0 22px, var(--accent-2) 22px);
-    }
-    .skill-val { font-family: var(--font-mono); font-size: 0.78rem; }
-
-    .contact-links { display: flex; gap: 14px; margin-top: 1.5rem; }
-    .contact-links .social-link { width: 46px; height: 46px; }
-    .contact-links .social-link svg { width: 22px; height: 22px; }
-
   </style>
 </head>
 <body>
 
-  <header class="mobile-header">
-    <div class="header-left">
-      <img src="./LinkedIn_400.jpg" alt="MH" class="header-avatar">
-      <div style="font-weight:700; font-size:1.1rem;">Martin Holý</div>
+  <header class="top-bar">
+    <div class="top-inner">
+      <a class="brand" href="#top">
+        <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="2" fill="none" stroke="#63d2ff" stroke-width="1.6"/><rect x="15" y="15" width="10" height="10" rx="2" fill="none" stroke="#ff9a4a" stroke-width="1.6"/><path d="M13 8h4v7" fill="none" stroke="#63d2ff" stroke-width="1.6"/></svg>
+        <span>ylohnitram<span class="cy">.dev</span></span>
+      </a>
+      <div class="search" role="search">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="#8ea0bd" stroke-width="1.5"/><path d="m11 11 3.5 3.5" stroke="#8ea0bd" stroke-width="1.5"/></svg>
+        <label for="q" class="sr-only">Filter projects</label>
+        <input id="q" type="search" placeholder="Filter projects, stack or topic" autocomplete="off">
+      </div>
+      <a class="cv-btn" href="Martin_Holy_CV.pdf" download>CV.pdf</a>
     </div>
-    <button class="burger-btn" aria-label="Toggle menu" onclick="toggleMenu()">
-      ☰
-    </button>
   </header>
 
-  <div class="menu-overlay" onclick="toggleMenu()"></div>
+  <main id="top">
 
-  <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <div class="avatar">
-        <img src="./LinkedIn_400.jpg" alt="Martin Holý" width="120" height="120" loading="eager">
+
+    <section class="top-grid">
+      <div class="card">
+        <span class="label">About</span>
+        <div class="who">
+          <img src="LinkedIn_400.jpg" alt="Martin Holý" width="72" height="72">
+          <h1>Martin Holý</h1>
+        </div>
+        <span class="role">AI-native architect · Senior AI Software Engineer · Prague, remote</span>
+        <p class="thesis">I build the harnesses that let LLM agents do real engineering work unattended, and the evals that show what they can and cannot do. Underneath is 15+ years of deployment automation, DevOps and platform engineering.</p>
+        <span class="label">Skills</span>
+        <ul class="chips">
+          <li>AI harnesses</li>
+          <li>LLM evals</li>
+          <li>multi-agent systems</li>
+          <li>Claude Code</li>
+          <li>MCP</li>
+          <li>Rust</li>
+          <li>TypeScript</li>
+          <li>Python</li>
+          <li>smart contract security</li>
+        </ul>
       </div>
-      <span class="brand-name">Martin Holý</span>
-      <span class="brand-role">AI-Native Architect · Software Engineer</span>
-    </div>
-    
-    <nav>
-      <ul>
-        <li><a href="#about" onclick="toggleMenu()">About</a></li>
-        <li><a href="#experience" onclick="toggleMenu()">Experience</a></li>
-        <li><a href="#projects" onclick="toggleMenu()">Projects</a></li>
-        <li><a href="#skills" onclick="toggleMenu()">Skills</a></li>
-        <li><a href="#education" onclick="toggleMenu()">Education</a></li>
-        <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
-      </ul>
-    </nav>
-    
-    <div class="sidebar-footer">
-      <div class="social-links">
-        <a href="https://linkedin.com/in/ylohnitram" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-        </a>
-        <a href="https://github.com/ylohnitram" class="social-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-        </a>
-      </div>
-      <p>© <span class="year-span"></span> Martin Holý</p>
-      <a href="Profile.pdf" class="btn outline" style="display:block; text-align:center; font-size:0.9rem" download>Download CV</a>
-    </div>
-  </aside>
 
-  <script>
-    function toggleMenu() {
-      document.getElementById('sidebar').classList.toggle('open');
-      document.querySelector('.menu-overlay').classList.toggle('open');
-    }
-  </script>
-
-  <main class="main-content">
-    
-    <section id="hero">
-      <p class="eyebrow">Autonomous Agents · Agent Federations · AI-Native Engineering</p>
-      <h1>Building the next generation of AI-native systems.</h1>
-      <p style="font-size: 1.25rem; color: var(--muted); max-width: 700px;">
-        I build autonomous agent systems that do real engineering work: an open-core agent platform written in Rust, federations of agents that take issues to merged pull requests, an AI engineering factory for a legal-tech company, and security research agents competing in Web3 audit contests.
-      </p>
-      <div style="margin-top: 2rem;">
-        <a href="#contact" class="btn">Get in touch</a>
-        <a href="#projects" class="btn outline" style="margin-left: 10px">View Work</a>
+      <div class="card contract">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="label">Current role</span>
+          <span class="run"><span class="dot"></span>SINCE 2026-03 · ONGOING</span>
+        </div>
+        <h2>Software factory</h2>
+        <dl class="kv">
+          <dt>company</dt><dd><a href="https://www.avvoka.com/" rel="nofollow">Avvoka</a>, London Area, UK</dd>
+          <dt>role</dt><dd>Senior AI Software Engineer</dd>
+          <dt>since</dt><dd class="or">March 2026, ongoing</dd>
+        </dl>
+        <div class="code" aria-label="What the factory does">
+          <span><span class="k">fn</span> write(<span class="a">issue</span>) <span class="a">→</span> merge_request</span>
+          <span><span class="k">fn</span> review(<span class="a">mr, ci</span>) <span class="a">→</span> verdict</span>
+          <span><span class="k">fn</span> ship(<span class="a">verdict</span>) <span class="a">→</span> production</span>
+        </div>
+        <p class="thesis">I build a software factory, a GitLab-integrated multi-agent harness that writes, reviews and ships production code.</p>
+        <ul>
+          <li>Agent workflows around merge requests, CI feedback and code review.</li>
+          <li>Guardrails and QA gates before anything lands.</li>
+          <li>LLM code generation and AI code review inside an established codebase and delivery process.</li>
+          <li>Quality and security standards for AI-generated changes.</li>
+        </ul>
       </div>
     </section>
 
-    <section id="about">
-      <h2>About</h2>
-      <p>
-        I design and build systems where <strong>AI agents do real engineering work</strong> — not demos. My current work spans an open-core agent platform, autonomous agent federations that plan, implement, review and merge production code, and AI-driven security research on Web3 audit platforms.
-      </p>
-      <p>
-        <strong>Agent Platforms:</strong> Building <a href="https://github.com/Replikanti/agentis" target="_blank" rel="noopener">Agentis</a> — an open-core platform for autonomous agents: a Rust runtime, an agent DSL, and public colonies under Apache 2.0.<br>
-        <strong>AI-Driven SDLC:</strong> Multi-agent "factories" that automate the software delivery lifecycle end to end, from issue intake to reviewed, merged pull requests.<br>
-        <strong>Security Research:</strong> Autonomous bug-hunting agents active in audit contests on Immunefi and Sherlock.
-      </p>
-      <p>
-        Before going all-in on agents I spent 15+ years in deployment automation, DevOps and platform engineering — that operational discipline is what keeps my agent systems production-grade.
-      </p>
-      <div style="margin-top: 1.5rem; display: flex; gap: 10px; flex-wrap: wrap;">
-        <span class="tag">Prague Metropolitan Area</span>
-        <span class="tag">Full-time</span>
-        <span class="tag">Open Source</span>
+    <section class="stats" aria-label="Network stats">
+      <div><span class="label">Merged PRs, all repos</span><span class="stat-big" data-stat="total.prs">2,226</span></div>
+      <div><span class="label">Agentis runtime</span><span class="stat-big">214k <span class="stat-sub">LOC Rust</span></span></div>
+      <div><span class="label">Active projects</span><span class="stat-big or">3</span></div>
+      <div><span class="label">Latest commit</span><span class="mono" style="font-weight:600;font-size:17px;padding-top:6px" data-stat="latest">mie@1317881</span></div>
+    </section>
+
+    <section aria-labelledby="chain-h" style="display:flex;flex-direction:column;gap:14px">
+      <div class="sec-head">
+        <h2 class="sec" id="chain-h">Projects</h2>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <span class="label" style="text-transform:none;letter-spacing:0">live from GitHub · commits and last commit update hourly</span>
+          <div class="nav-btns">
+            <button class="nav-btn" id="chain-prev" type="button" aria-label="Previous blocks"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="nav-btn" id="chain-next" type="button" aria-label="Next blocks"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </div>
+      <div class="strip-wrap">
+        <ol class="chain" tabindex="0" aria-label="Project blocks">
+        <li class="chain-item" data-search="dark-factory agentis .ag · foundry · halmos · evm · solana a federation of audit agents that hunts smart contract bugs on immunefi bug bounties and in sherlock and cantina contests. critical, dup">
+          <a class="blk blk-active" href="#dark-factory">
+            <span class="blk-top"><span><span data-stat="df.commits">447</span> commits</span><span class="s-run">ACTIVE</span></span>
+            <span class="blk-name">dark-factory</span>
+            <span class="blk-hash"><span data-stat="df.hash">9abb856</span></span>
+            <span class="blk-date"><span data-stat="df.date">2026-10-21</span></span>
+          </a>
+        </li>
+        <li class="chain-item" data-search="mie rust · 170k loc · parquet · binance usdⓢ-m a deterministic research machine for the btcusdt perpetual. it maps the market first and looks for strategies last. v0.1.0">
+          <a class="blk blk-active" href="#mie">
+            <span class="blk-top"><span><span data-stat="mie.commits">109</span> commits</span><span class="s-run">ACTIVE</span></span>
+            <span class="blk-name">MIE</span>
+            <span class="blk-hash"><span data-stat="mie.hash">1317881</span></span>
+            <span class="blk-date"><span data-stat="mie.date">2026-11-08</span></span>
+          </a>
+        </li>
+        <li class="chain-item" data-search="interviewscam.com hugo · github pages · ai sdlc harness a community registry of fake job interviews that target developers, the kind that ends with you running their app. in development">
+          <a class="blk" href="#interviewscam">
+            <span class="blk-top"><span><span data-stat="scam.commits">22</span> commits</span><span class="s-run">IN DEVELOPMENT</span></span>
+            <span class="blk-name">interviewscam.com</span>
+            <span class="blk-hash">private</span>
+            <span class="blk-date"><span data-stat="scam.date">2026-11-08</span></span>
+          </a>
+        </li>
+        <li class="chain-item" data-search="agentis rust · agent dsl · mcp · open-core open-core platform for autonomous agents and the runtime under my federations. private core, public storefront and colonies. 214k loc">
+          <a class="blk" href="#agentis">
+            <span class="blk-top"><span><span data-stat="agentis.commits">28</span> commits</span><span class="s-ok">BUILT</span></span>
+            <span class="blk-name">Agentis</span>
+            <span class="blk-hash"><span data-stat="agentis.hash">3939f97</span></span>
+            <span class="blk-date"><span data-stat="agentis.date">2026-11-07</span></span>
+          </a>
+        </li>
+        <li class="chain-item" data-search="agentis-colonies .ag · bash · apache 2.0 ready-to-run federations of daemon agents that learn from observation and take over routine work. {colonies_prs} prs">
+          <a class="blk" href="#colonies">
+            <span class="blk-top"><span><span data-stat="colonies.commits">1,291</span> commits</span><span class="s-ok">BUILT</span></span>
+            <span class="blk-name">agentis-colonies</span>
+            <span class="blk-hash"><span data-stat="colonies.hash">9abb856</span></span>
+            <span class="blk-date"><span data-stat="colonies.date">2026-10-21</span></span>
+          </a>
+        </li>
+        <li class="chain-item" data-search="flat-cyborg rust · pty-process · rustix drives claude code and other llm clis from scripts and daemons through a real terminal. pty harness">
+          <a class="blk" href="#flat-cyborg">
+            <span class="blk-top"><span><span data-stat="flat.commits">70</span> commits</span><span class="s-ok">BUILT</span></span>
+            <span class="blk-name">flat-cyborg</span>
+            <span class="blk-hash"><span data-stat="flat.hash">97b5de6</span></span>
+            <span class="blk-date"><span data-stat="flat.date">2026-09-26</span></span>
+          </a>
+        </li>
+        <li class="chain-item" data-search="sdlc-bench bash · real merged prs finds the cheapest model and effort level that still passes each class of engineering task. 9 task classes">
+          <a class="blk" href="#sdlc-bench">
+            <span class="blk-top"><span><span data-stat="bench.commits">5</span> commits</span><span class="s-ok">BUILT</span></span>
+            <span class="blk-name">sdlc-bench</span>
+            <span class="blk-hash"><span data-stat="bench.hash">d85c522</span></span>
+            <span class="blk-date"><span data-stat="bench.date">2026-07-06</span></span>
+          </a>
+        </li>
+        <li class="chain-item" data-search="kenny rust · glm-5.2 · qwen3 runs open-weight moe models on a pool of scrap hardware over wan, where a dead node is a non-event. m5 · sim wan">
+          <a class="blk" href="#kenny">
+            <span class="blk-top"><span><span data-stat="kenny.commits">27</span> commits</span><span class="s-ok">BUILT</span></span>
+            <span class="blk-name">kenny</span>
+            <span class="blk-hash"><span data-stat="kenny.hash">9aae2a8</span></span>
+            <span class="blk-date"><span data-stat="kenny.date">2026-07-22</span></span>
+          </a>
+        </li>
+        <li class="chain-item" data-search="agent-mandate-evals typescript · mcp · openai agents sdk an mcp payment check and 10 behavioural evals for ai agents that spend money under mandates. 108 runs">
+          <a class="blk" href="#agent-mandate-evals">
+            <span class="blk-top"><span><span data-stat="mandate.commits">2</span> commits</span><span class="s-ok">BUILT</span></span>
+            <span class="blk-name">agent-mandate-evals</span>
+            <span class="blk-hash"><span data-stat="mandate.hash">28e9f04</span></span>
+            <span class="blk-date"><span data-stat="mandate.date">2026-10-27</span></span>
+          </a>
+        </li>
+        <li class="chain-item" data-search="rare-bug blindness eval python · micro1 eval hackathon an eval on 7 finished code4rena and sherlock contests that splits recall by how many human auditors found each bug. 22% rare recall">
+          <a class="blk" href="#rare-bug-eval">
+            <span class="blk-top"><span>private repo</span><span class="s-mute">SUBMITTED</span></span>
+            <span class="blk-name">Rare-bug blindness eval</span>
+            <span class="blk-hash">private</span>
+            <span class="blk-date">2026-11-03</span>
+          </a>
+        </li>
+        </ol>
+        <div class="rail" aria-hidden="true"><span class="thumb"></span></div>
       </div>
     </section>
 
-    <section id="experience">
-      <h2>Experience</h2>
-
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div class="timeline-role">Senior AI Software Engineer · <a href="https://www.avvoka.com/" target="_blank" rel="nofollow">Avvoka</a></div>
-          <div class="timeline-meta">03/2026 – Present</div>
+    <section class="details" aria-labelledby="details-h">
+      <h2 class="sec" id="details-h">Project details</h2>
+      <article id="dark-factory" class="detail" data-search="dark-factory agentis .ag · foundry · halmos · evm · solana a federation of audit agents that hunts smart contract bugs on immunefi bug bounties and in sherlock and cantina contests. critical, dup">
+        <div class="meta">
+          <h3>dark-factory</h3>
+          <span class="pill s-run">ACTIVE</span>
+          <dl>
+            <dt>commits</dt><dd><span data-stat="df.commits">447</span></dd>
+            <dt>last commit</dt><dd class="cy"><span data-stat="df.hash">9abb856</span></dd>
+            <dt>updated</dt><dd><span data-stat="df.date">2026-10-21</span></dd>
+            <dt>key figure</dt><dd class="or">Critical, dup</dd>
+          </dl>
+          <span class="stack">Agentis .ag · Foundry · Halmos · EVM · Solana</span>
+          <a href="https://github.com/Replikanti/agentis-colonies/tree/main/dark-factory">agentis-colonies/dark-factory</a>
         </div>
-        <div class="timeline-desc">
-          <ul>
-            <li>Building an <strong>AI engineering "factory"</strong> — a GitLab-integrated multi-agent system that writes, reviews and ships production code.</li>
-            <li>Designing agent workflows around merge requests, CI feedback and code review, with guardrails and QA gates before anything lands.</li>
-            <li>Integrating LLM-driven code generation and review into an established codebase and delivery process.</li>
-            <li>Ensuring high standards of software quality and security within the company's AI ecosystem.</li>
-          </ul>
+        <div class="body">
+          <p class="lead">A federation of audit agents that hunts smart contract bugs on Immunefi bug bounties and in Sherlock and Cantina contests.</p>
+          <ol class="txs">
+              <li><span class="tx">01</span><span>The pipeline runs scope, invariant design, hunt, a refute gate, PoC and packaging. A human reviews and submits.</span></li>
+              <li><span class="tx">02</span><span>Stateful invariant fuzzing in Foundry, symbolic execution in Halmos and fork-state checks against live deployments.</span></li>
+              <li><span class="tx">03</span><span>First end-to-end Immunefi submission was rated Critical and closed as a duplicate of an earlier report.</span></li>
+              <li><span class="tx">04</span><span>On 8 finished Sherlock contests with 132 judged findings it finds 55% of consensus bugs and 9% of rare ones. Rare-bug recall is the current work.</span></li>
+          </ol>
         </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div class="timeline-role">AI Platform Architect · <a href="https://github.com/Replikanti" target="_blank" rel="noopener">Replikanti</a></div>
-          <div class="timeline-meta">11/2025 – Present</div>
+      </article>
+      <article id="mie" class="detail" data-search="mie rust · 170k loc · parquet · binance usdⓢ-m a deterministic research machine for the btcusdt perpetual. it maps the market first and looks for strategies last. v0.1.0">
+        <div class="meta">
+          <h3>MIE</h3>
+          <span class="pill s-run">ACTIVE</span>
+          <dl>
+            <dt>commits</dt><dd><span data-stat="mie.commits">109</span></dd>
+            <dt>last commit</dt><dd class="cy"><span data-stat="mie.hash">1317881</span></dd>
+            <dt>updated</dt><dd><span data-stat="mie.date">2026-11-08</span></dd>
+            <dt>key figure</dt><dd class="or">v0.1.0</dd>
+          </dl>
+          <span class="stack">Rust · 170k LOC · Parquet · Binance USDⓈ-M</span>
+          <a href="https://github.com/Replikanti/mie">Replikanti/mie</a>
         </div>
-        <div class="timeline-desc">
-          <h3 style="font-size:1rem; margin-top:1rem;"><a href="https://github.com/Replikanti/agentis" target="_blank" rel="noopener">Agentis</a> · Founder & Lead Architect <span style="color:var(--muted); font-weight:400; font-size:0.9rem;">03/2026 – Present</span></h3>
-          <ul>
-            <li>Building an <strong>open-core platform for autonomous agents</strong>: a Rust runtime (~200k LOC), an agent DSL, and an evolution engine with capability-based security and cognitive budgets.</li>
-            <li>Publishing ready-to-run federations in <a href="https://github.com/Replikanti/agentis-colonies" target="_blank" rel="noopener">agentis-colonies</a> (Apache 2.0) — colonies of daemon agents that learn from observation and gradually take over routine work.</li>
-            <li>A development federation autonomously takes GitHub issues to <strong>merged pull requests</strong> — planning, implementing, reviewing and merging behind QA gates.</li>
-            <li>Built <a href="https://github.com/Replikanti/sdlc-bench" target="_blank" rel="noopener">sdlc-bench</a> to measure the cheapest (model, effort) tier per engineering task class and calibrate agent routing with data instead of intuition.</li>
-          </ul>
-          <h3 style="font-size:1rem; margin-top:1rem;"><a href="https://github.com/Replikanti/flat-cyborg" target="_blank" rel="noopener">flat-cyborg</a> · Author <span style="color:var(--muted); font-weight:400; font-size:0.9rem;">05/2026 – Present</span></h3>
-          <ul>
-            <li>A <strong>PTY wrapper for driving LLM CLIs</strong> (Claude Code and others) from scripts and daemons — terminal screen-state extraction and structured output parsing, written in Rust with minimal dependencies.</li>
-            <li>The code-generation backbone of the agent federations: every autonomous edit runs through it.</li>
-          </ul>
-          <h3 style="font-size:1rem; margin-top:1rem;">Web3 Security Research · <a href="https://github.com/Replikanti/agentis-colonies/tree/main/dark-factory" target="_blank" rel="noopener">dark-factory</a> <span style="color:var(--muted); font-weight:400; font-size:0.9rem;">06/2026 – Present</span></h3>
-          <ul>
-            <li>Building an <strong>autonomous audit federation</strong> on top of Agentis: stateful invariant fuzzing, symbolic execution (Halmos), and fork-state verification against live deployments.</li>
-            <li>Competing in audit contests and bounty programs on <strong><a href="https://audits.sherlock.xyz/watson/f1A7_cYb0rG" target="_blank" rel="noopener">Sherlock</a> and Immunefi</strong>; the pipeline has reproduced past High-severity contest findings end to end.</li>
-          </ul>
-          <h3 style="font-size:1rem; margin-top:1rem;">Ralph Platform · Lead Engineer <span style="color:var(--muted); font-weight:400; font-size:0.9rem;">01/2026 – 03/2026</span></h3>
-          <ul>
-            <li>Built a <strong>production-ready digital labor automation platform</strong> from scratch using AI-augmented engineering patterns.</li>
-            <li>Implemented autonomous Git workflows with <strong>multi-agent coordination</strong>, production-grade guardrails, and cost management.</li>
-            <li>Tech: TypeScript, GCP, GKE, Terraform, LangFuse.</li>
-          </ul>
-          <h3 style="font-size:1rem; margin-top:1rem;"><a href="https://flowlint.dev" target="_blank" rel="noopener">FlowLint</a> · Project Founder <span style="color:var(--muted); font-weight:400; font-size:0.9rem;">11/2025 – 03/2026</span></h3>
-          <ul>
-            <li>Built <strong><a href="https://flowlint.dev" target="_blank" rel="noopener">FlowLint</a></strong>, an open-source static analysis suite for the n8n ecosystem.</li>
-            <li>Designed an <strong>AST-based linting engine</strong> (14+ security and reliability rules) for low-code environments.</li>
-            <li>Shipped a full suite: CLI, GitHub App (BullMQ/Redis), Chrome Extension (React/Vite).</li>
-            <li>Set up end-to-end CI/CD pipelines, automated publishing to NPM/Chrome Store.</li>
-          </ul>
+        <div class="body">
+          <p class="lead">A deterministic research machine for the BTCUSDT perpetual. It maps the market first and looks for strategies last.</p>
+          <ol class="txs">
+              <li><span class="tx">01</span><span>Market state, regime, conditional behavior, bias, location, trigger, execution, outcome.</span></li>
+              <li><span class="tx">02</span><span>Live Binance futures data over WebSocket, REST and the public archive goes into tiered Parquet storage with deterministic replay.</span></li>
+              <li><span class="tx">03</span><span>An edge counts only if it survives replay, out-of-sample validation and an honest attempt to refute it. NO SUITABLE STRATEGY is a valid answer.</span></li>
+              <li><span class="tx">04</span><span>Agents run the research loop, never the numbers.</span></li>
+          </ol>
         </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div class="timeline-role">Automation Engineer · <a href="https://www.almacareer.com/" target="_blank" rel="nofollow">Alma Career Czechia</a></div>
-          <div class="timeline-meta">09/2018 – 12/2025</div>
+      </article>
+      <article id="interviewscam" class="detail" data-search="interviewscam.com hugo · github pages · ai sdlc harness a community registry of fake job interviews that target developers, the kind that ends with you running their app. in development">
+        <div class="meta">
+          <h3>interviewscam.com</h3>
+          <span class="pill s-run">IN DEVELOPMENT</span>
+          <dl>
+            <dt>commits</dt><dd><span data-stat="scam.commits">22</span></dd>
+            <dt>last commit</dt><dd class="cy">private</dd>
+            <dt>updated</dt><dd><span data-stat="scam.date">2026-11-08</span></dd>
+            <dt>key figure</dt><dd class="or">in development</dd>
+          </dl>
+          <span class="stack">Hugo · GitHub Pages · AI SDLC harness</span>
+          <span class="muted">private repo</span>
         </div>
-        <div class="timeline-desc">
-          <ul>
-            <li>Designed and operated a <strong>self-service deployment platform</strong> with unified pipelines.</li>
-            <li>Introduced Kubernetes and Istio, standardized deployment and traffic management.</li>
-            <li>Implemented <strong>n8n workflows</strong> for onboarding/offboarding and GitHub Copilot usage reporting — inputs for budget/license planning.</li>
-            <li><strong>AI/LLM Adoption:</strong> Used Claude Sonnet for pair-coding and documentation in Backstage, writing AWS CDK and release documentation.</li>
-            <li>Member of the software architecture team, closely collaborating with development, operations, testers and architects.</li>
-          </ul>
+        <div class="body">
+          <p class="lead">A community registry of fake job interviews that target developers, the kind that ends with you running their app.</p>
+          <ol class="txs">
+              <li><span class="tx">01</span><span>Records start from artifacts such as domains, app names, file hashes and handles, not from accusations against a company.</span></li>
+              <li><span class="tx">02</span><span>Every record carries evidence, moderation and a takedown path.</span></li>
+              <li><span class="tx">03</span><span>Built issue by issue through my AI SDLC harness with plan-first PRs and adversarial review.</span></li>
+          </ol>
         </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div class="timeline-role">DevOps Manager · <a href="https://www.homecredit.net/" target="_blank" rel="nofollow">Home Credit International</a></div>
-          <div class="timeline-meta">09/2017 – 06/2018</div>
+      </article>
+      <article id="agentis" class="detail" data-search="agentis rust · agent dsl · mcp · open-core open-core platform for autonomous agents and the runtime under my federations. private core, public storefront and colonies. 214k loc">
+        <div class="meta">
+          <h3>Agentis</h3>
+          <span class="pill s-ok">BUILT</span>
+          <dl>
+            <dt>commits</dt><dd><span data-stat="agentis.commits">28</span></dd>
+            <dt>last commit</dt><dd class="cy"><span data-stat="agentis.hash">3939f97</span></dd>
+            <dt>updated</dt><dd><span data-stat="agentis.date">2026-11-07</span></dd>
+            <dt>key figure</dt><dd class="or">214k LOC</dd>
+          </dl>
+          <span class="stack">Rust · agent DSL · MCP · open-core</span>
+          <a href="https://github.com/Replikanti/agentis">Replikanti/agentis</a>
         </div>
-        <div class="timeline-desc">
-          <ul>
-            <li>Led DevOps for Air Bank's international expansion (DEV/UAT environments).</li>
-            <li>Operations and automation — VMs, Docker, Docker Swarm, Kubernetes, Istio.</li>
-            <li>Setting up CI/CD, monitoring and incident management across teams.</li>
-            <li>Configured and monitored integration tests in Jenkins and Cucumber.</li>
-          </ul>
+        <div class="body">
+          <p class="lead">Open-core platform for autonomous agents and the runtime under my federations. Private core, public storefront and colonies.</p>
+          <ol class="txs">
+              <li><span class="tx">01</span><span>Rust runtime of about 214,000 lines with an agent language and an evolution engine.</span></li>
+              <li><span class="tx">02</span><span>Capability-based security and cognitive budgets cap what each agent can touch and spend.</span></li>
+              <li><span class="tx">03</span><span>MCP client and structured tool calls. <span data-stat="core.prs">706</span> merged PRs in the private core.</span></li>
+          </ol>
         </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div class="timeline-role">Application Support Team Lead · <a href="https://www.homecredit.net/" target="_blank" rel="nofollow">Home Credit International</a></div>
-          <div class="timeline-meta">03/2013 – 08/2017</div>
+      </article>
+      <article id="colonies" class="detail" data-search="agentis-colonies .ag · bash · apache 2.0 ready-to-run federations of daemon agents that learn from observation and take over routine work. {colonies_prs} prs">
+        <div class="meta">
+          <h3>agentis-colonies</h3>
+          <span class="pill s-ok">BUILT</span>
+          <dl>
+            <dt>commits</dt><dd><span data-stat="colonies.commits">1,291</span></dd>
+            <dt>last commit</dt><dd class="cy"><span data-stat="colonies.hash">9abb856</span></dd>
+            <dt>updated</dt><dd><span data-stat="colonies.date">2026-10-21</span></dd>
+            <dt>key figure</dt><dd class="or"><span data-stat="colonies.prs">1,279</span> PRs</dd>
+          </dl>
+          <span class="stack">.ag · Bash · Apache 2.0</span>
+          <a href="https://github.com/Replikanti/agentis-colonies">Replikanti/agentis-colonies</a>
         </div>
-        <div class="timeline-desc">
-          <ul>
-            <li>Led a team of application specialists, set up processes and SLA/OLA metrics.</li>
-            <li>Took over and extended deployment automation to TRAIN and UAT environments.</li>
-            <li>Deployment coordination — PREPROD verification and PROD releases with go/no-go decisions.</li>
-            <li>Designed a deployment platform for the EKIS side product — self-service, unified pipelines.</li>
-          </ul>
+        <div class="body">
+          <p class="lead">Ready-to-run federations of daemon agents that learn from observation and take over routine work.</p>
+          <ol class="txs">
+              <li><span class="tx">01</span><span>The development federation plans, implements, reviews and merges code. It opens pull requests that pass CI and an independent QA review.</span></li>
+              <li><span class="tx">02</span><span>Home of dark-factory and grand-rounds, a rare disease diagnosis federation from the MVA Hackathon.</span></li>
+          </ol>
         </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div class="timeline-role">Senior Application Support Specialist · <a href="https://www.homecredit.net/" target="_blank" rel="nofollow">Home Credit International</a></div>
-          <div class="timeline-meta">07/2012 – 03/2013</div>
+      </article>
+      <article id="flat-cyborg" class="detail" data-search="flat-cyborg rust · pty-process · rustix drives claude code and other llm clis from scripts and daemons through a real terminal. pty harness">
+        <div class="meta">
+          <h3>flat-cyborg</h3>
+          <span class="pill s-ok">BUILT</span>
+          <dl>
+            <dt>commits</dt><dd><span data-stat="flat.commits">70</span></dd>
+            <dt>last commit</dt><dd class="cy"><span data-stat="flat.hash">97b5de6</span></dd>
+            <dt>updated</dt><dd><span data-stat="flat.date">2026-09-26</span></dd>
+            <dt>key figure</dt><dd class="or">PTY harness</dd>
+          </dl>
+          <span class="stack">Rust · pty-process · rustix</span>
+          <a href="https://github.com/Replikanti/flat-cyborg">Replikanti/flat-cyborg</a>
         </div>
-        <div class="timeline-desc">
-          <ul>
-            <li>Incident management, service requests, and RFCs for development.</li>
-            <li>Deployed server applications on Oracle WebLogic and PL/SQL procedures.</li>
-            <li>Performed deployments to TRAIN, UAT and PREPROD with go/no-go decisions.</li>
-          </ul>
+        <div class="body">
+          <p class="lead">Drives Claude Code and other LLM CLIs from scripts and daemons through a real terminal.</p>
+          <ol class="txs">
+              <li><span class="tx">01</span><span>Reads terminal screen state and extracts structured output.</span></li>
+              <li><span class="tx">02</span><span>Minimal dependencies, no async runtime.</span></li>
+              <li><span class="tx">03</span><span>Every autonomous code edit in my federations goes through it.</span></li>
+          </ol>
         </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div class="timeline-role">Infrastructure Engineer · IBM</div>
-          <div class="timeline-meta">03/2010 – 06/2012</div>
+      </article>
+      <article id="sdlc-bench" class="detail" data-search="sdlc-bench bash · real merged prs finds the cheapest model and effort level that still passes each class of engineering task. 9 task classes">
+        <div class="meta">
+          <h3>sdlc-bench</h3>
+          <span class="pill s-ok">BUILT</span>
+          <dl>
+            <dt>commits</dt><dd><span data-stat="bench.commits">5</span></dd>
+            <dt>last commit</dt><dd class="cy"><span data-stat="bench.hash">d85c522</span></dd>
+            <dt>updated</dt><dd><span data-stat="bench.date">2026-07-06</span></dd>
+            <dt>key figure</dt><dd class="or">9 task classes</dd>
+          </dl>
+          <span class="stack">Bash · real merged PRs</span>
+          <a href="https://github.com/Replikanti/sdlc-bench">Replikanti/sdlc-bench</a>
         </div>
-        <div class="timeline-desc">
-          <ul>
-            <li>Operations monitoring and administration of IBM servers and infrastructure for enterprise environments.</li>
-            <li>Subject Matter Expert for scripting (ksh, bash, PowerShell).</li>
-          </ul>
+        <div class="body">
+          <p class="lead">Finds the cheapest model and effort level that still passes each class of engineering task.</p>
+          <ol class="txs">
+              <li><span class="tx">01</span><span>Tasks rebuilt from real merged PRs, each with an objective verify script.</span></li>
+              <li><span class="tx">02</span><span>About 50 runs across 9 classes. Haiku is stable on mechanical work, Sonnet high is the first stable tier on semantic work, Sonnet medium passed 1 of 11.</span></li>
+              <li><span class="tx">03</span><span>The results set the model tier of every agent in my SDLC harness.</span></li>
+          </ol>
         </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div class="timeline-role">Technical Support Specialist · AVG</div>
-          <div class="timeline-meta">03/2008 – 02/2010</div>
+      </article>
+      <article id="kenny" class="detail" data-search="kenny rust · glm-5.2 · qwen3 runs open-weight moe models on a pool of scrap hardware over wan, where a dead node is a non-event. m5 · sim wan">
+        <div class="meta">
+          <h3>kenny</h3>
+          <span class="pill s-ok">BUILT</span>
+          <dl>
+            <dt>commits</dt><dd><span data-stat="kenny.commits">27</span></dd>
+            <dt>last commit</dt><dd class="cy"><span data-stat="kenny.hash">9aae2a8</span></dd>
+            <dt>updated</dt><dd><span data-stat="kenny.date">2026-07-22</span></dd>
+            <dt>key figure</dt><dd class="or">M5 · sim WAN</dd>
+          </dl>
+          <span class="stack">Rust · GLM-5.2 · Qwen3</span>
+          <a href="https://github.com/Replikanti/kenny">Replikanti/kenny</a>
         </div>
-        <div class="timeline-desc">
-          <ul>
-            <li>Progressed from 1st-line to 3rd-line technical support for the AVG antivirus product.</li>
-            <li>Pre-sales communication, forum support, and remote assistance via LogMeIn.</li>
-          </ul>
+        <div class="body">
+          <p class="lead">Runs open-weight MoE models on a pool of scrap hardware over WAN, where a dead node is a non-event.</p>
+          <ol class="txs">
+              <li><span class="tx">01</span><span>A node can die mid-generation. The pool re-places its experts and the run still finishes.</span></li>
+              <li><span class="tx">02</span><span>The spine spot-checks node answers, and a byzantine node gets caught.</span></li>
+              <li><span class="tx">03</span><span>Tested on a simulated WAN so far.</span></li>
+          </ol>
         </div>
-      </div>
-
+      </article>
+      <article id="agent-mandate-evals" class="detail" data-search="agent-mandate-evals typescript · mcp · openai agents sdk an mcp payment check and 10 behavioural evals for ai agents that spend money under mandates. 108 runs">
+        <div class="meta">
+          <h3>agent-mandate-evals</h3>
+          <span class="pill s-ok">BUILT</span>
+          <dl>
+            <dt>commits</dt><dd><span data-stat="mandate.commits">2</span></dd>
+            <dt>last commit</dt><dd class="cy"><span data-stat="mandate.hash">28e9f04</span></dd>
+            <dt>updated</dt><dd><span data-stat="mandate.date">2026-10-27</span></dd>
+            <dt>key figure</dt><dd class="or">108 runs</dd>
+          </dl>
+          <span class="stack">TypeScript · MCP · OpenAI Agents SDK</span>
+          <a href="https://github.com/ylohnitram/agent-mandate-evals">ylohnitram/agent-mandate-evals</a>
+        </div>
+        <div class="body">
+          <p class="lead">An MCP payment check and 10 behavioural evals for AI agents that spend money under mandates.</p>
+          <ol class="txs">
+              <li><span class="tx">01</span><span>Graded from the authorization log and the payment rail, not from what the model says.</span></li>
+              <li><span class="tx">02</span><span>Scripted honest and evasive models keep the harness honest in CI.</span></li>
+              <li><span class="tx">03</span><span>No model split, relabelled or retried a denied payment, but some paid a redirected recipient after a prompt injection. A payee allowlist fixed it, 5 of 5.</span></li>
+          </ol>
+        </div>
+      </article>
+      <article id="rare-bug-eval" class="detail" data-search="rare-bug blindness eval python · micro1 eval hackathon an eval on 7 finished code4rena and sherlock contests that splits recall by how many human auditors found each bug. 22% rare recall">
+        <div class="meta">
+          <h3>Rare-bug blindness eval</h3>
+          <span class="pill s-mute">SUBMITTED</span>
+          <dl>
+            <dt>commits</dt><dd>private</dd>
+            <dt>last commit</dt><dd class="cy">private</dd>
+            <dt>updated</dt><dd>2026-11-03</dd>
+            <dt>key figure</dt><dd class="or">22% rare recall</dd>
+          </dl>
+          <span class="stack">Python · micro1 Eval Hackathon</span>
+          <span class="muted">private repo</span>
+        </div>
+        <div class="body">
+          <p class="lead">An eval on 7 finished Code4rena and Sherlock contests that splits recall by how many human auditors found each bug.</p>
+          <ol class="txs">
+              <li><span class="tx">01</span><span>The best models found about half of the consensus bugs and 22% of the rare ones.</span></li>
+              <li><span class="tx">02</span><span>The top human auditor of each contest found 68% and 50%.</span></li>
+              <li><span class="tx">03</span><span>Graded by location and root cause, with a calibrated grader and a human baseline.</span></li>
+          </ol>
+        </div>
+      </article>
+      <p class="empty" id="no-match" hidden>No project matches that filter.</p>
     </section>
 
-    <section id="projects">
-      <h2>Projects</h2>
-      <div class="project-grid">
-        <div class="project-card">
-          <div class="project-title"><a href="https://github.com/Replikanti/agentis" target="_blank" rel="noopener">Agentis</a></div>
-          <div class="project-desc">
-            Open-core platform for autonomous agents: Rust runtime, agent DSL, and evolution engine with capability-based security and cognitive budgets. Private core, public storefront and colonies.
-          </div>
-          <div>
-            <span class="tag">Rust</span>
-            <span class="tag">AI Agents</span>
-            <span class="tag">Open-Core</span>
-          </div>
-        </div>
-
-        <div class="project-card">
-          <div class="project-title"><a href="https://github.com/Replikanti/agentis-colonies" target="_blank" rel="noopener">Agentis Colonies</a></div>
-          <div class="project-desc">
-            Ready-to-run agent federations under Apache 2.0: an autonomous development colony that takes issues to merged PRs, non-custodial protocol monitoring, and security research colonies.
-          </div>
-          <div>
-            <span class="tag">Multi-Agent</span>
-            <span class="tag">Apache 2.0</span>
-            <span class="tag">Automation</span>
-          </div>
-        </div>
-
-        <div class="project-card">
-          <div class="project-title"><a href="https://github.com/Replikanti/flat-cyborg" target="_blank" rel="noopener">flat-cyborg</a></div>
-          <div class="project-desc">
-            PTY wrapper for driving LLM CLIs programmatically — terminal screen-state extraction and structured output for scripted and daemonized use of Claude Code and other terminal AI tools.
-          </div>
-          <div>
-            <span class="tag">Rust</span>
-            <span class="tag">PTY</span>
-            <span class="tag">LLM Tooling</span>
-          </div>
-        </div>
-
-        <div class="project-card">
-          <div class="project-title"><a href="https://github.com/Replikanti/agentis-colonies/tree/main/dark-factory" target="_blank" rel="noopener">dark-factory</a></div>
-          <div class="project-desc">
-            Autonomous Web3 security research federation: stateful invariant fuzzing, Halmos symbolic execution, and fork-state verification against live deployments. Active on Immunefi and Sherlock.
-          </div>
-          <div>
-            <span class="tag">Security</span>
-            <span class="tag">EVM / Solana</span>
-            <span class="tag">Formal Methods</span>
-          </div>
-        </div>
-
-        <div class="project-card">
-          <div class="project-title"><a href="https://github.com/Replikanti/sdlc-bench" target="_blank" rel="noopener">sdlc-bench</a></div>
-          <div class="project-desc">
-            Benchmark harness that measures the minimal (model, effort) tier per SDLC task class — SWE-bench-pattern tasks rebuilt from real merged PRs, objective verify scripts, cost-aware tier ladder.
-          </div>
-          <div>
-            <span class="tag">LLM Evaluation</span>
-            <span class="tag">Benchmarking</span>
-          </div>
-        </div>
-
-        <div class="project-card">
-          <div class="project-title"><a href="https://flowlint.dev" target="_blank" rel="noopener">FlowLint</a></div>
-          <div class="project-desc">
-            Open-source static analysis suite for the n8n ecosystem. AST-based linting engine with 14+ security and reliability rules. Full suite: CLI, GitHub App, Chrome Extension.
-          </div>
-          <div>
-            <span class="tag">TypeScript</span>
-            <span class="tag">Open Source</span>
-            <span class="tag">AST</span>
-          </div>
-        </div>
+    <section class="card contact" aria-labelledby="contact-h">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <h2 class="sec" id="contact-h">Contact</h2>
+        <span style="color:var(--text-2)">Email works best. Copy the address.</span>
       </div>
-    </section>
-
-    <section id="skills">
-      <h2>Skills</h2>
-      <div class="skills-section">
-
-        <div class="skill-category">
-          <h4>AI & Agents</h4>
-          <div class="skill-row"><span class="skill-name">Multi-Agent Federations</span> <span class="skill-val">Expert</span></div>
-          <div class="skill-row"><span class="skill-name">LLM Orchestration</span> <span class="skill-val">Expert</span></div>
-          <div class="skill-row"><span class="skill-name">Autonomous Agents</span> <span class="skill-val">Expert</span></div>
-          <div class="skill-row"><span class="skill-name">LLM CLI Automation (Claude Code)</span> <span class="skill-val">Expert</span></div>
-          <div class="skill-row"><span class="skill-name">Model & Cost Benchmarking</span> <span class="skill-val">Advanced</span></div>
-        </div>
-
-        <div class="skill-category">
-          <h4>Development</h4>
-          <div class="skill-row"><span class="skill-name">Rust</span> <span class="skill-val">Advanced</span></div>
-          <div class="skill-row"><span class="skill-name">Shell / Bash</span> <span class="skill-val">Expert</span></div>
-          <div class="skill-row"><span class="skill-name">TypeScript / Node.js</span> <span class="skill-val">Advanced</span></div>
-          <div class="skill-row"><span class="skill-name">Static Analysis (AST)</span> <span class="skill-val">Advanced</span></div>
-          <div class="skill-row"><span class="skill-name">React</span> <span class="skill-val">Intermediate</span></div>
-        </div>
-
-        <div class="skill-category">
-          <h4>Security Research</h4>
-          <div class="skill-row"><span class="skill-name">Invariant Fuzzing (Foundry)</span> <span class="skill-val">Advanced</span></div>
-          <div class="skill-row"><span class="skill-name">Symbolic Execution (Halmos)</span> <span class="skill-val">Intermediate</span></div>
-          <div class="skill-row"><span class="skill-name">EVM / Solidity</span> <span class="skill-val">Intermediate</span></div>
-          <div class="skill-row"><span class="skill-name">Solana / SVM</span> <span class="skill-val">Intermediate</span></div>
-        </div>
-
-        <div class="skill-category">
-          <h4>Infrastructure</h4>
-          <div class="skill-row"><span class="skill-name">GCP / GKE</span> <span class="skill-val">Advanced</span></div>
-          <div class="skill-row"><span class="skill-name">Docker</span> <span class="skill-val">Advanced</span></div>
-          <div class="skill-row"><span class="skill-name">Terraform</span> <span class="skill-val">Advanced</span></div>
-          <div class="skill-row"><span class="skill-name">Kubernetes</span> <span class="skill-val">Intermediate</span></div>
-          <div class="skill-row"><span class="skill-name">GitHub Actions</span> <span class="skill-val">Expert</span></div>
-        </div>
-
-        <div class="skill-category">
-          <h4>Languages</h4>
-          <div class="skill-row"><span class="skill-name">Czech</span> <span class="skill-val">Native</span></div>
-          <div class="skill-row"><span class="skill-name">English</span> <span class="skill-val">B2 / Professional</span></div>
-          <div class="skill-row"><span class="skill-name">German</span> <span class="skill-val">A2 / Elementary</span></div>
-        </div>
-
-      </div>
-    </section>
-
-    <section id="education">
-      <h2>Education</h2>
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div class="timeline-role">Gymnazium Jatecni, Usti nad Labem</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact">
-      <h2>Contact</h2>
-      <p>The fastest way to reach me is email or LinkedIn. Based in the Prague metropolitan area, working remotely.</p>
       <div class="contact-links">
-        <a href="mailto:ylohnitram@gmail.com" class="social-link" aria-label="Email" title="ylohnitram@gmail.com">
-          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
-        </a>
-        <a href="https://linkedin.com/in/ylohnitram" class="social-link" aria-label="LinkedIn" title="LinkedIn" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-        </a>
-        <a href="https://github.com/ylohnitram" class="social-link" aria-label="GitHub" title="GitHub" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-        </a>
+        <span class="email">ylohnitram@gmail.com</span>
+        <a href="https://www.linkedin.com/in/ylohnitram">LinkedIn</a>
+        <a href="https://github.com/ylohnitram">GitHub</a>
       </div>
     </section>
 
-    <footer class="main-footer">
-      <div class="social-links">
-        <a href="https://linkedin.com/in/ylohnitram" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-        </a>
-        <a href="https://github.com/ylohnitram" class="social-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-        </a>
-      </div>
-      <p>© <span class="year-span"></span> Martin Holý</p>
-      <a href="Profile.pdf" class="btn outline" style="display:inline-block; font-size:0.9rem" download>Download CV</a>
+    <footer>
+      <span>© <span class="year">2026</span> Martin Holý</span>
+      <span>Project data from GitHub, refreshed hourly · last update <span data-stat="generated">2026-11-08</span></span>
     </footer>
-
   </main>
 
-<script>
-  document.querySelectorAll('.year-span').forEach(el => el.textContent = new Date().getFullYear());
-</script>
+  <script>
+    // Live block data. data.json is rebuilt hourly by .github/workflows/pages.yml.
+    // The HTML already holds a snapshot, so the page reads fine without this.
+    (async () => {
+      const names = {"core": "agentis-core", "agentis": "agentis", "colonies": "agentis-colonies", "mie": "mie", "flat": "flat-cyborg", "bench": "sdlc-bench", "kenny": "kenny", "scam": "interviewscam", "mandate": "agent-mandate-evals"};
+      const set = (k, v) => document.querySelectorAll('[data-stat="' + k + '"]').forEach((el) => { el.textContent = v; });
+      const fmt = (n) => Number(n).toLocaleString('en-US');
+      try {
+        const res = await fetch('data.json', { cache: 'no-store' });
+        if (!res.ok) return;
+        const d = await res.json();
+        const repos = d.repos || {};
+        for (const [id, r] of Object.entries(repos)) {
+          if (!r) continue;
+          if (r.commits != null) set(id + '.commits', fmt(r.commits));
+          if (r.prs != null) set(id + '.prs', fmt(r.prs));
+          if (r.date) set(id + '.date', r.date.slice(0, 10));
+          if (r.oid) set(id + '.hash', r.oid.slice(0, 7));
+        }
+        if (!d.partial && d.total_prs) set('total.prs', fmt(d.total_prs));
+        const pub = Object.entries(repos).filter(([id, r]) => r && r.oid && r.date && id !== 'df');
+        if (pub.length) {
+          pub.sort((a, b) => b[1].date.localeCompare(a[1].date));
+          set('latest', names[pub[0][0]] + '@' + pub[0][1].oid.slice(0, 7));
+        }
+        if (d.generated) set('generated', new Date(d.generated).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' }));
+      } catch (e) { /* keep the snapshot */ }
+    })();
+
+    // Filter blocks and details.
+    (() => {
+      const q = document.getElementById('q');
+      const items = document.querySelectorAll('[data-search]');
+      const none = document.getElementById('no-match');
+      q.addEventListener('input', () => {
+        const s = q.value.trim().toLowerCase();
+        let shown = 0;
+        items.forEach((el) => {
+          const hit = !s || el.dataset.search.includes(s);
+          el.hidden = !hit;
+          if (hit && el.classList.contains('detail')) shown++;
+        });
+        none.hidden = shown > 0;
+      window.dispatchEvent(new Event('resize'));
+    });
+    })();
+
+    // Block strip: hidden native scrollbar, edge fades, arrow buttons, glow rail, mouse drag.
+    (() => {
+      const strip = document.querySelector('.chain');
+      const prev = document.getElementById('chain-prev');
+      const next = document.getElementById('chain-next');
+      const rail = document.querySelector('.rail');
+      const thumb = rail.querySelector('.thumb');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const update = () => {
+        const max = strip.scrollWidth - strip.clientWidth;
+        const x = strip.scrollLeft;
+        const over = max > 2;
+        rail.style.visibility = over ? 'visible' : 'hidden';
+        prev.disabled = !over || x <= 2;
+        next.disabled = !over || x >= max - 2;
+        strip.classList.toggle('fade-l', over && x > 2);
+        strip.classList.toggle('fade-r', over && x < max - 2);
+        const ratio = Math.min(1, strip.clientWidth / strip.scrollWidth);
+        thumb.style.width = (ratio * 100) + '%';
+        thumb.style.transform = 'translateX(' + (over ? (x / max) * (1 / ratio - 1) * 100 : 0) + '%)';
+      };
+      const page = (dir) => strip.scrollBy({ left: dir * strip.clientWidth * 0.8, behavior: reduce ? 'auto' : 'smooth' });
+      prev.addEventListener('click', () => page(-1));
+      next.addEventListener('click', () => page(1));
+      strip.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+
+      let down = false, moved = false, startX = 0, startLeft = 0;
+      strip.addEventListener('pointerdown', (e) => {
+        if (e.pointerType !== 'mouse' || e.button !== 0) return;
+        down = true; moved = false; startX = e.clientX; startLeft = strip.scrollLeft;
+      });
+      window.addEventListener('pointermove', (e) => {
+        if (!down) return;
+        const dx = e.clientX - startX;
+        if (!moved && Math.abs(dx) > 5) { moved = true; strip.classList.add('dragging'); }
+        if (moved) strip.scrollLeft = startLeft - dx;
+      });
+      window.addEventListener('pointerup', () => {
+        if (!down) return;
+        down = false;
+        strip.classList.remove('dragging');
+      });
+      strip.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+    })();
+
+    (() => {
+      document.querySelectorAll('.year').forEach((el) => { el.textContent = new Date().getFullYear(); });
+    })();
+  </script>
 </body>
 </html>

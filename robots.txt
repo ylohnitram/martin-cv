@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://martin-holy.online/sitemap.xml
+Sitemap: https://ylohnitram.dev/sitemap.xml
